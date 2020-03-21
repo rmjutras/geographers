@@ -1,0 +1,38 @@
+.row_grid {
+    display: inline-block;
+    height: 90px;
+    width: 90px;
+    border-style: solid;
+}
+
+.palette {
+    display: inline-block;
+    height: 80px;
+    width:80px;
+    position: absolute;
+    right: 10px;
+}
+
+.colour_field {
+    background-color: yellow;
+}
+
+.colour_town {
+    background-color: red;
+}
+
+.colour_water {
+    background-color: blue;
+}
+
+.colour_forest {
+    background-color: green;
+}
+
+.colour_monster {
+    background-color: purple;
+}
+
+.colour_null {
+    background-color: grey;
+}
