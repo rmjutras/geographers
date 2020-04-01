@@ -111,7 +111,9 @@ app.post("/startGame", (req, res) => {
   var lobbyId = req.body.lobbyId,
     lobby = lobbyStore[lobbyId];
 
-  if (!lobby || /* lobby.players.length < 2 || */ lobby.createdBy != req.body.playerId) {
+  if (!lobby ||
+      (argv.env != "dev" && lobby.players.length < 2) ||
+      lobby.createdBy != req.body.playerId) {
     return res.status(500).send("Invalid lobby id");
   }
 
