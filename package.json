@@ -1,0 +1,16 @@
+{
+  "name": "sovereignty",
+  "description": "a cool card game to play with your friends",
+  "version": "0.0.1",
+  "scripts": {
+    "server": "node src/server/server.js",
+    "server:dev": "node src/server/server.js --env dev"
+  },
+  "dependencies": [
+    "body-parser",
+    "express",
+    "uuid",
+    "minimist",
+    "websocket"
+  ]
+}

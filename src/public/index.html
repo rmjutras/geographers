@@ -1,0 +1,37 @@
+<html>
+<head>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/stugame.css">
+</head>
+<body>
+  <section id="home">
+    <div class="col col3">
+      <div id="buttonContainer">
+        <div id="createLobby" class="button disabled">create lobby</div>
+        <div id="joinLobby" class="button disabled">join lobby</div>
+        <div id="startGame" class="button hidden">start game</div>
+      </div><div id="lobbyIdEntryContainer">
+        <input type="text" id="lobbyIdEntry">
+      </div>
+      <div id="playerListContainer">
+        <div id="lobbyIdContainer">Lobby Code: <span id="lobbyIdDisplay"></span></div>
+        <div id="playerListTitle">Players:</div>
+        <div id="playerList"></div>
+      </div>
+    </div><div class="col col7">
+      <div id="lobby">
+        <div id="chatContainer">
+          <div id="chatWindow"></div>
+          <input type="text" id="chatEntry"><div id="chatSubmit" class="button">choose a name</div>
+        </div>
+      </div>
+    </div>
+  </section><section id="game">
+    <div id='grid_master' class='grid_master'></div>
+    <div id='palette_master' class='palette_master'></div>
+    <div id='button_master'></div>
+  </section>
+  <script src="js/main.js"></script>
+  <script src="js/stugame.js"></script>
+</body>
+</html>

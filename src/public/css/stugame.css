@@ -1,0 +1,133 @@
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue' sans-serif;
+}
+
+.col3 {
+  width: 30%;
+}
+
+.col7 {
+  width: 70%;
+}
+
+.col {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.button {
+  width: 200px;
+  font-size: 26px;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  text-align: center;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+#buttonContainer {
+  padding: 50px;
+  width: 200px;
+  display: inline-block;
+}
+
+.disabled {
+  color: #888;
+}
+
+#lobbyIdEntryContainer {
+  padding-top: 150px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#lobby {
+  padding: 50px;
+}
+
+#lobbyIdContainer {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#playerListContainer {
+  padding: 50px;
+}
+
+#playerListTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#playerList {
+  padding-left: 15px;
+  font-size: 20px;
+}
+
+#lobbyIdEntry {
+  text-transform: uppercase;
+}
+
+#chatWindow {
+  height: 400px;
+  border: 1px solid #eee;
+  padding-left: 20px;
+  padding-right: 10px;
+  overflow-y: scroll;
+  word-break: break-all;
+}
+
+#chatEntry {
+  display: inline-block;
+  width: calc(75% - 20px); 
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+#chatSubmit {
+  display: inline-block;
+  vertical-align: top;
+  width: 25%;
+}
+
+section {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  transition: left .5s ease;
+}
+
+#home {
+  left: 0;
+}
+
+#home.in-game {
+  left: -100%;
+}
+
+#game {
+  left: 100%;
+}
+
+#game.in-game {
+  left: 0;
+}
+
+.card {
+  height: 100px;
+  width: 100px;
+  background-color: #e8e8e8;
+  border: 10px solid #fff;
+  padding: 10px;
+}
+
+.card.selected {
+  border-color: indigo;
+}
