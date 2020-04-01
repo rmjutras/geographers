@@ -218,6 +218,9 @@ wss.on("request", (req) => {
                   prettyName: data.prettyName,
                   message: data.message
                 });
+                if (data.message == "play space lady") {
+                  c.sendJson({ type: "playSpaceLady" });
+                }
               });
             }
           });
