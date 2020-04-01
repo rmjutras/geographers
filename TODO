@@ -1,4 +1,6 @@
 TODO
+card library for seasonal goals
+host draws shape
 
 card drawing mechanic
  - server side handler
@@ -6,3 +8,13 @@ card drawing mechanic
  - client side ui for non-host players
 
 handle players dropping and coming back when the game is in progress
+
+player ordering 
+
+point entering
+
+FUN PRETTY STUFF:
+players as icons to show ordering
+pretty board
+change grid fill icon
+
