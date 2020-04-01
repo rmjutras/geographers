@@ -41,6 +41,10 @@ window.onload = () => {
 
   const webSocket = new WebSocket("ws://" + window.location.host, "echo-protocol");
 
+  webSocket.sendJson = function(json) {
+    webSocket.send(JSON.stringify(json));
+  }
+
   webSocket.onopen = (event) => {
     if (state.playerId) {
       sendMessage({ type: "playerId", id: state.playerId });
@@ -54,7 +58,7 @@ window.onload = () => {
   };
 
   function sendMessage(json) {
-    webSocket.send(JSON.stringify(json));
+    webSocket.sendJson(json);
   }
 
   var subscriptions = {};
@@ -85,6 +89,10 @@ window.onload = () => {
 
   subscribe("updatePlayers", (event) => {
     updatePlayers(event.players);
+  });
+
+  subscribe("playSpaceLady", (event) => {
+    (new Audio("audio/Space_Lady.mp3")).play();
   });
 
   const MenuState = {
