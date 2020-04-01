@@ -1,0 +1,8 @@
+TODO
+
+card drawing mechanic
+ - server side handler
+ - client side ui for host
+ - client side ui for non-host players
+
+handle players dropping and coming back when the game is in progress
