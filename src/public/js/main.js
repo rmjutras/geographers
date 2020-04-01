@@ -1,6 +1,9 @@
 function change_colour(el, row, col, i) {
+    el.classList.remove(el.classList.value.split(' ')[1]);
     el.classList.add(active_colour);
     actions.push([row, col, palette_key[active_colour]].join(''));
+    grid_state[row][col] = palette_key[active_colour];
+    console.log(grid_state);
 }
 
 function select_colour(el) {
@@ -17,8 +20,7 @@ function undo_click() {
 };
 
 function share_click() {
-    let sharelist = actions;
-    console.log(sharelist.join(''))
+    console.log(grid_state);
 };
 
 function import_click() {
@@ -31,9 +33,12 @@ function clickableGrid(rows, cols, callback_change) {
 
     for (var r=0; r<rows; ++r) {
         var row = grid.appendChild(document.createElement('div'));
+        grid_state.push([]);
         for (var c=0; c<cols; ++c) {
             let cell = row.appendChild(document.createElement('div'));
+            grid_state[r].push(palette_key['colour_null']);
             cell.classList.add('row_grid');
+            cell.classList.add('colour_null');
             cell.innerHTML = ++i;
             cell.addEventListener(
                 'click',
@@ -102,7 +107,7 @@ function generateButtons() {
 };
 
 function main() {
-    const grid = clickableGrid(11, 11, change_colour, select_colour);
+    const grid = clickableGrid(11, 11, change_colour);
     const palette_master = generatePalette(select_colour);
     const button_master = generateButtons();
     document.getElementById('grid_master').appendChild(grid);
@@ -112,6 +117,7 @@ function main() {
 
 let active_colour = 'colour_null';
 let actions = [];
+let grid_state = [];
 let selected_palette = null;
 const palette_key = {
     'colour_field': 'y',
