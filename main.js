@@ -5,10 +5,11 @@ function change_colour(el, row, col, i) {
 
 function select_colour(el) {
     active_colour = el.classList.value;
-    active_colour = active_colour.split(' ')[1];
+    active_colour = active_colour.split(' ')[2];
 
-    let newarr = selected_palette.classList.value
-    selected_palette.classList
+    const newarr = selected_palette.classList.value;
+    selected_palette.classList.remove(newarr.split(' ')[2]);
+    selected_palette.classList.add(active_colour);
 };
 
 function undo_click() {
@@ -24,10 +25,9 @@ function import_click() {
     console.log('import');
 };
      
-function clickableGrid(rows, cols, callback_change, callback_palette) {
+function clickableGrid(rows, cols, callback_change) {
     let i = 0;
     const grid = document.createElement('div');
-    const palette_classes = Object.keys(palette_key);
 
     for (var r=0; r<rows; ++r) {
         var row = grid.appendChild(document.createElement('div'));
@@ -47,17 +47,18 @@ function clickableGrid(rows, cols, callback_change, callback_palette) {
     return grid;
 };
 
-function generatePalette() {
+function generatePalette(callback_palette) {
     let palette_master = document.createElement('div');
-    palette_master.classList.add('palette');
     selected_palette = palette_master.appendChild(document.createElement('div'));
     selected_palette.classList.add('palette');
+    selected_palette.classList.add('selected_palette');
     selected_palette.classList.add(active_colour);
 
     const palette_classes = Object.keys(palette_key);
     palette_classes.forEach(element => {
         let palette = palette_master.appendChild(document.createElement('div'));
         palette.classList.add('palette');
+        palette.classList.add('palette_sub');
         palette.classList.add(element);
         palette.addEventListener(
             'click',
@@ -72,7 +73,7 @@ function generatePalette() {
 };
 
 function generateButtons() {
-    let button_master = document.createElement('div');
+    let buttons_master = document.createElement('div');
     undo_button = buttons_master.appendChild(document.createElement('button'));
     undo_button.innerHTML = 'Undo';
     undo_button.addEventListener(
@@ -102,7 +103,7 @@ function generateButtons() {
 
 function main() {
     const grid = clickableGrid(11, 11, change_colour, select_colour);
-    const palette_master = generatePalette();
+    const palette_master = generatePalette(select_colour);
     const button_master = generateButtons();
     document.getElementById('grid_master').appendChild(grid);
     document.getElementById('palette_master').appendChild(palette_master);

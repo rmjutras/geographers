@@ -9,8 +9,31 @@
     display: inline-block;
     height: 80px;
     width:80px;
+    margin: 2px;
+}
+
+.palette_sub {
+    border-style: dotted;
+    margin-left: 8px;
+}
+
+.palette_master {
+    display: inline-block;
+    vertical-align: top;
+    width: 105px;
     position: absolute;
     right: 10px;
+}
+
+.selected_palette {
+    border-style: double;
+    border-width: 10px;
+    margin-bottom: 10px;
+}
+
+.grid_master {
+    width: 1065px;
+    display: inline-block;
 }
 
 .colour_field {
