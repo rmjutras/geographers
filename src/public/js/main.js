@@ -39,7 +39,7 @@ function clickableGrid(rows, cols, callback_change) {
             grid_state[r].push(palette_key['colour_null']);
             cell.classList.add('row_grid');
             cell.classList.add('colour_null');
-            cell.innerHTML = ++i;
+            // cell.innerHTML = ++i;
             cell.addEventListener(
                 'click',
                 (function(el,r,c,i) {
