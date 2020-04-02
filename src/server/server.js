@@ -172,7 +172,7 @@ app.post("nextCard", (req, res) => {
 // });
 
 function originIsAllowed(origin) {
-  return origin == "http://sovereignty.herokuapp.com";
+  return origin == "http://geographers.herokuapp.com";
 }
 
 wss.on("request", (req) => {
