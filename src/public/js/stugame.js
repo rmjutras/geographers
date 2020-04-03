@@ -1,5 +1,4 @@
-window.onload = () => {
-  
+var stugame = (function() {
   const request = {
     send: (method, endpoint, body) => {
       if (request.pendingRequest) {
@@ -39,61 +38,11 @@ window.onload = () => {
     }
   };
 
-  const webSocket = new WebSocket("ws://" + window.location.host, "echo-protocol");
-
-  webSocket.sendJson = function(json) {
-    webSocket.send(JSON.stringify(json));
-  }
-
-  webSocket.onopen = (event) => {
-    if (state.playerId) {
-      sendMessage({ type: "playerId", id: state.playerId });
-    }
-  };
-
-  webSocket.onmessage = (message) => {
-    var data = message.data && JSON.parse(message.data);
-    console.log(data);
-    notify(data.type, data);
-  };
+  var webSocket;
 
   function sendMessage(json) {
     webSocket.sendJson(json);
   }
-
-  var subscriptions = {};
-
-  function subscribe(event, callback) {
-    subscriptions[event] = subscriptions[event] || [];
-    subscriptions[event].push(callback);
-  }
-
-  function notify(event, message) {
-    subscriptions[event] && subscriptions[event].forEach((sub) => {
-      sub(message);
-    });
-  }
-
-  subscribe("playerId", (event) => {
-    if (!state.playerId) {
-      state.playerId = event.id;
-      localStorage.setItem("playerId", state.playerId);
-      webSocket.sendJson({ type: "playerId", id: state.playerId });
-    }
-    loadState();
-  });
-
-  subscribe("chat", (event) => {
-    updateChat(event.prettyName, event.message);
-  });
-
-  subscribe("updatePlayers", (event) => {
-    updatePlayers(event.players);
-  });
-
-  subscribe("playSpaceLady", (event) => {
-    (new Audio("audio/Space_Lady.mp3")).play();
-  });
 
   const MenuState = {
     HOME: 0,
@@ -109,26 +58,27 @@ window.onload = () => {
     players: {},
     prettyName: "",
     menuState: MenuState.HOME,
-    gameState: null
+    gameState: null,
+    stateLoaded: false
   };
 
   function setLobby(id) {
     state.lobbyId = id;
-    lobbyIdDisplay.innerText = id;
-    joinLobbyButton.classList.add("hidden");
-    lobbyIdEntry.classList.add("hidden");
-    createLobbyButton.classList.add("hidden");
+    elements.lobbyIdDisplay.innerText = id;
+    elements.joinLobbyButton.classList.add("hidden");
+    elements.lobbyIdEntry.classList.add("hidden");
+    elements.createLobbyButton.classList.add("hidden");
   }
 
   function updatePlayers(players) {
     state.players = players;
-    playerList.innerText = Object.keys(players).map((id) => {
+    elements.playerList.innerText = Object.keys(players).map((id) => {
       return players[id] || id;
     }).join("\n");
     if (players.length > 1) {
-      startGameButton.classList.remove("disabled");
+      elements.startGameButton.classList.remove("disabled");
     } else {
-      startGameButton.classList.add("disabled");
+      elements.startGameButton.classList.add("disabled");
     }
   }
 
@@ -138,9 +88,9 @@ window.onload = () => {
     }
     request.post("createLobby", { playerId: state.playerId, prettyName: state.prettyName }).then((res) => {
       state.menuState = MenuState.IN_MY_LOBBY;
-      startGameButton.classList.remove("hidden");
+      elements.startGameButton.classList.remove("hidden");
       setLobby(res.lobbyId);
-      saveState();
+      saveParams();
       var players = {}
       players[state.playerId] = state.prettyName;
       updatePlayers(players);
@@ -148,7 +98,7 @@ window.onload = () => {
   }
 
   function joinLobby() {
-    var code = lobbyIdEntry.value.toUpperCase();
+    var code = elements.lobbyIdEntry.value.toUpperCase();
     if (code.length != 4 || !state.prettyName) {
       return;
     }
@@ -158,29 +108,29 @@ window.onload = () => {
       setLobby(code);
       if (res.started) {
         state.menuState = MenuState.IN_GAME;
-        homeSection.classList.add("in-game");
-        gameSection.classList.add("in-game");
+        elements.homeSection.classList.add("in-game");
+        elements.gameSection.classList.add("in-game");
       } else if (res.createdBy == state.playerId) {
-        startGameButton.classList.remove("hidden");
+        elements.startGameButton.classList.remove("hidden");
         state.menuState = MenuState.IN_MY_LOBBY;
       }
-      saveState();
+      saveParams();
     });
   }
 
   function lobbyIdKeyPress(event) {
     var char = event.charCode;
-    if (lobbyIdEntry.value.length == 4 || char < 65 || char > 122) {
+    if (elements.lobbyIdEntry.value.length == 4 || char < 65 || char > 122) {
       event.preventDefault();
       return false;
     }
   }
 
   function lobbyIdKeyUp() {
-    if (lobbyIdEntry.value.length == 4 && state.prettyName) {
-      joinLobbyButton.classList.remove("disabled");
+    if (elements.lobbyIdEntry.value.length == 4 && state.prettyName) {
+      elements.joinLobbyButton.classList.remove("disabled");
     } else {
-      joinLobbyButton.classList.add("disabled");
+      elements.joinLobbyButton.classList.add("disabled");
     }
   }
 
@@ -189,10 +139,10 @@ window.onload = () => {
     if (state.menuState != MenuState.IN_MY_LOBBY) {
       throw new Error("wrong state to start game");
     }
-    request.post("startGame", { playerId: state.playerId, lobbyId: state.lobbyId }).then((update) => {
+    request.post("startGame", { playerId: state.playerId, lobbyId: state.lobbyId }).then((res) => {
       state.menuState = MenuState.IN_GAME;
-      homeSection.classList.add("in-game");
-      gameSection.classList.add("in-game");
+      elements.homeSection.classList.add("in-game");
+      elements.gameSection.classList.add("in-game");
       // do stuff
     });
   }
@@ -204,18 +154,18 @@ window.onload = () => {
   }
 
   function sendChat() {
-    if (!chatEntry.value) { return; }
+    if (!elements.chatEntry.value) { return; }
     if (!state.prettyName) {
-      setPrettyName(chatEntry.value);
-      saveState();
-      chatEntry.focus();
+      setPrettyName(elements.chatEntry.value);
+      saveParams();
+      elements.chatEntry.focus();
       return;
     }
-    if (!state.lobbyId || !chatEntry.value) {
+    if (!state.lobbyId || !elements.chatEntry.value) {
       return;
     }
-    var message = chatEntry.value;
-    chatEntry.value = "";
+    var message = elements.chatEntry.value;
+    elements.chatEntry.value = "";
     sendMessage({
       type: "chat",
       lobbyId: state.lobbyId,
@@ -223,7 +173,7 @@ window.onload = () => {
       prettyName: state.prettyName,
       message: message
     });
-    chatEntry.focus();
+    elements.chatEntry.focus();
     if (message == "play space lady") {
       (new Audio("audio/Space_Lady.mp3")).play();
     }
@@ -236,15 +186,15 @@ window.onload = () => {
 
   function setPrettyName(value) {
     state.prettyName = value;
-    chatEntry.value = "";
-    chatSubmit.innerText = "submit";
-    createLobbyButton.classList.remove("disabled");
-    if (lobbyIdEntry.value.length == 4) {
-      joinLobbyButton.classList.remove("disabled");
+    elements.chatEntry.value = "";
+    elements.chatSubmit.innerText = "submit";
+    elements.createLobbyButton.classList.remove("disabled");
+    if (elements.lobbyIdEntry.value.length == 4) {
+      elements.joinLobbyButton.classList.remove("disabled");
     }
   }
 
-  function saveState() {
+  function saveParams() {
     var url = window.location.href;
     var params = [
       "prettyName",
@@ -265,7 +215,7 @@ window.onload = () => {
     window.location.href = url;
   }
 
-  function loadState() {
+  function loadParams() {
     var url = window.location.href;
     var hashPos = url.search("#");
     if (hashPos != -1) {
@@ -279,29 +229,104 @@ window.onload = () => {
       }
 
       if (params.lobbyId && params.lobbyId.length == 4) {
-        lobbyIdEntry.value = params.lobbyId;
+        elements.lobbyIdEntry.value = params.lobbyId;
         joinLobby();
       }
     }
   }
 
-  var lobbyIdDisplay = document.getElementById("lobbyIdDisplay");
-  var chatEntry = document.getElementById("chatEntry");
-  var chatContainer = document.getElementById("chatContainer");
-  var chatSubmit = document.getElementById("chatSubmit");
-  var createLobbyButton = document.getElementById("createLobby");
-  var joinLobbyButton = document.getElementById("joinLobby");
-  var lobbyIdEntry = document.getElementById("lobbyIdEntry");
-  var startGameButton = document.getElementById("startGame");
-  var homeSection = document.getElementById("home");
-  var gameSection = document.getElementById("game");
-  var playerList = document.getElementById("playerList");
+  var elements = {};
 
-  startGameButton.onclick = startGame;
-  lobbyIdEntry.onkeyup = lobbyIdKeyUp;
-  lobbyIdEntry.onkeypress = lobbyIdKeyPress;
-  createLobbyButton.onclick = createLobby;
-  joinLobbyButton.onclick = joinLobby;
-  chatSubmit.onclick = sendChat;
-  chatContainer.onkeypress = chatContainerKeyPress;
-};
+  window.onload = () => {
+    elements.lobbyIdDisplay = document.getElementById("lobbyIdDisplay");
+    elements.chatEntry = document.getElementById("chatEntry");
+    elements.chatContainer = document.getElementById("chatContainer");
+    elements.chatSubmit = document.getElementById("chatSubmit");
+    elements.createLobbyButton = document.getElementById("createLobby");
+    elements.joinLobbyButton = document.getElementById("joinLobby");
+    elements.lobbyIdEntry = document.getElementById("lobbyIdEntry");
+    elements.startGameButton = document.getElementById("startGame");
+    elements.homeSection = document.getElementById("home");
+    elements.gameSection = document.getElementById("game");
+    elements.playerList = document.getElementById("playerList");
+
+    elements.startGameButton.onclick = startGame;
+    elements.lobbyIdEntry.onkeyup = lobbyIdKeyUp;
+    elements.lobbyIdEntry.onkeypress = lobbyIdKeyPress;
+    elements.createLobbyButton.onclick = createLobby;
+    elements.joinLobbyButton.onclick = joinLobby;
+    elements.chatSubmit.onclick = sendChat;
+    elements.chatContainer.onkeypress = chatContainerKeyPress;
+
+    webSocket = new WebSocket("ws://" + window.location.host, "echo-protocol");
+
+    webSocket.sendJson = function(json) {
+      webSocket.send(JSON.stringify(json));
+    }
+
+    webSocket.onopen = (event) => {
+      if (state.playerId) {
+        sendMessage({ type: "playerId", id: state.playerId });
+      }
+    };
+
+    webSocket.onmessage = (message) => {console.log("got message");console.log(message);
+      var data = message.data && JSON.parse(message.data);
+      console.log(data);
+      notify(data.type, data);
+    };
+
+    var subscriptions = {};
+
+    function subscribe(event, callback) {
+      subscriptions[event] = subscriptions[event] || [];
+      subscriptions[event].push(callback);
+    }
+
+    function notify(event, message) {
+      subscriptions[event] && subscriptions[event].forEach((sub) => {
+        sub(message);
+      });
+    }
+
+    subscribe("playerId", (event) => {
+      if (!state.playerId) {
+        state.playerId = event.id;
+        localStorage.setItem("playerId", state.playerId);
+        webSocket.sendJson({ type: "playerId", id: state.playerId });
+      }
+      loadParams();
+    });
+
+    subscribe("chat", (event) => {
+      updateChat(event.prettyName, event.message);
+    });
+
+    subscribe("updatePlayers", (event) => {
+      updatePlayers(event.players);
+    });
+
+    subscribe("playSpaceLady", (event) => {
+      (new Audio("audio/Space_Lady.mp3")).play();
+    });
+
+    subscribe("updateGameState", (event) => {
+      state.gameState = event.gameState;
+      console.log("got new game state");
+      console.log(event.gameState);
+      redraw();
+      grid_state = event.gameState.grid;
+    });
+  };
+
+  return {
+    setGameState: function(gameState) {
+      sendMessage({
+        type: "updateGameState",
+        gameState: gameState,
+        lobbyId: state.lobbyId,
+        playerId: state.playerId
+      });
+    }
+  }
+})();
