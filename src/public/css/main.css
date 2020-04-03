@@ -1,7 +1,7 @@
 .row_grid {
     display: inline-block;
-    height: 65px;
-    width: 65px;
+    height: 55px;
+    width: 55px;
     border-style: solid;
 }
 
@@ -23,7 +23,7 @@
     width: 105px;
     position: absolute;
     right: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .selected_palette {
@@ -35,7 +35,7 @@
 .grid_master {
     width: 1065px;
     display: inline-block;
-    margin: 50px;
+    margin: 20px;
 }
 
 .colour_field {
@@ -71,4 +71,63 @@
 
 .paper {
     background-image: url("../img/old-paper.jpg");
+    height: 100%;
+}
+
+.player_header {
+    height: 100px;
+    width: 100%;
+    margin: 5px;
+    text-align: center;
+}
+
+.player_icon {
+    height: 94px;
+    width: 94px;
+    background-image: url("../img/cartographer_avatar.png");
+    background-size: 94px 94px;
+    display: inline-block;
+    border-style: solid;
+}
+
+.player_text {
+    display: inline-block;
+    width: 315px;
+    height:106px;
+    vertical-align: top;
+    font-size: 24px;
+    font-family: 'Satisfy', cursive;
+}
+
+.player_name {
+    height: 26px;
+    width: 305px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+.player_motto {
+    background-image: url("../img/scroll.png");
+    height: 45px;
+    width: 305px;
+    background-size: 305px 65px;
+    background-repeat: no-repeat;
+    text-align: center;
+    padding-top: 20px;
+    margin-left: 5px;
+    vertical-align: top;
+}
+
+.compass_rose {
+    height: 95px;
+    width: 95px;
+    background-image: url("../img/compass-rose.png");
+    background-size: 95px 95px;
+    display: inline-block;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.seasonal_cards_dropdown {
+
 }
