@@ -37,6 +37,7 @@ function clickableGrid(rows, cols, callback_change) {
         grid_state.push([]);
         for (var c=0; c<cols; ++c) {
             let cell = row.appendChild(document.createElement('div'));
+            cell.id = "cell_" + r + c;
             grid_state[r].push(palette_key['colour_null']);
             cell.classList.add('row_grid');
             cell.classList.add('colour_null');
@@ -52,6 +53,16 @@ function clickableGrid(rows, cols, callback_change) {
     }
     return grid;
 };
+
+function redraw() {
+    for (var i = 0; i < grid_state.length; i++) {
+        var row = grid_state[i];
+        for (var j = 0; j < row.length; j++) {
+            var cell = document.getElementById("cell_" + i + j);
+            cell.classList.add(palette_key_inverse[row[j]]);
+        }
+    }
+}
 
 function generatePalette(callback_palette) {
     let palette_master = document.createElement('div');
@@ -130,6 +141,14 @@ const palette_key = {
     'colour_forest': 'g',
     'colour_monster': 'p',
     'colour_null': 'n'
+};
+const palette_key_inverse = {
+    'y': 'colour_field',
+    'r': 'colour_town',
+    'b': 'colour_water',
+    'g': 'colour_forest',
+    'p': 'colour_monster',
+    'n': 'colour_null'
 };
 main();
 
