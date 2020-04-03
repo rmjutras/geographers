@@ -102,21 +102,21 @@ app.post("/joinLobby", (req, res) => {
   }
 });
 
-app.post("/startGame", (req, res) => {
-  var lobbyId = req.body.lobbyId,
-    lobby = lobbyStore[lobbyId];
+// app.post("/startGame", (req, res) => {
+//   var lobbyId = req.body.lobbyId,
+//     lobby = lobbyStore[lobbyId];
 
-  if (!lobby ||
-      (argv.env != "dev" && lobby.players.length < 2) ||
-      lobby.createdBy != req.body.playerId) {
-    return res.status(500).send("Invalid lobby id");
-  }
+//   if (!lobby ||
+//       (argv.env != "dev" && lobby.players.length < 2) ||
+//       lobby.createdBy != req.body.playerId) {
+//     return res.status(500).send("Invalid lobby id");
+//   }
 
-  // set up game stuff
-  lobby.started = true;
+//   // set up game stuff
+//   lobby.started = true;
 
-  res.send({});
-});
+//   res.send({});
+// });
 
 // app.post("/updateGameState", (req, res) => {
 //   var lobbyId = req.body.lobbyId,
@@ -220,7 +220,7 @@ wss.on("request", (req) => {
           connection.playerId = data.id;
           playerConnections[data.id] = playerConnections[data.id] || [];
           playerConnections[data.id].push(connection);
-        } else if ((data.type == "chat" || data.type == "updateGameState") &&
+        } else if ((data.type == "chat" || data.type == "updateGameState" || data.type == "startGame") &&
                    data.lobbyId &&
                    lobbyStore[data.lobbyId] &&
                    lobbyStore[data.lobbyId].players.indexOf(data.playerId) != -1) {
@@ -248,6 +248,13 @@ wss.on("request", (req) => {
                   });
                   console.log("updating game state");
                   console.log(data.gameState);
+                } else if (data.type == "startGame" &&
+                           (argv.env == "dev" || lobbyStore[data.lobbyId].players.length >= 2) &&
+                           lobbyStore[data.lobbyId].createdBy == data.playerId) {
+                  c.sendJson({
+                    type: "gameStarted"
+                  });
+                  lobbyStore[data.lobbyId].started = true;
                 }
               });
             }
@@ -255,6 +262,7 @@ wss.on("request", (req) => {
         }
       } catch (e) {
         console.log("failed to parse message");
+        console.log(e);
       }
     }
   });

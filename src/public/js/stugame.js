@@ -139,11 +139,10 @@ var stugame = (function() {
     if (state.menuState != MenuState.IN_MY_LOBBY) {
       throw new Error("wrong state to start game");
     }
-    request.post("startGame", { playerId: state.playerId, lobbyId: state.lobbyId }).then((res) => {
-      state.menuState = MenuState.IN_GAME;
-      elements.homeSection.classList.add("in-game");
-      elements.gameSection.classList.add("in-game");
-      // do stuff
+    sendMessage({
+      type: "startGame",
+      playerId: state.playerId,
+      lobbyId: state.lobbyId
     });
   }
 
@@ -316,6 +315,12 @@ var stugame = (function() {
       console.log(event.gameState);
       redraw();
       grid_state = event.gameState.grid;
+    });
+
+    subscribe("gameStarted", (event) => {
+      state.menuState = MenuState.IN_GAME;
+      elements.homeSection.classList.add("in-game");
+      elements.gameSection.classList.add("in-game");
     });
   };
 
