@@ -105,17 +105,15 @@ window.onload = () => {
 
   var state = {
     playerId: localStorage.getItem("playerId"),
-    lobby: {
-      id: "",
-      players: {}
-    },
+    lobbyId: "",
+    players: {},
     prettyName: "",
     menuState: MenuState.HOME,
     gameState: null
   };
 
   function setLobby(id) {
-    state.lobby.id = id;
+    state.lobbyId = id;
     lobbyIdDisplay.innerText = id;
     joinLobbyButton.classList.add("hidden");
     lobbyIdEntry.classList.add("hidden");
@@ -123,7 +121,7 @@ window.onload = () => {
   }
 
   function updatePlayers(players) {
-    state.lobby.players = players;
+    state.players = players;
     playerList.innerText = Object.keys(players).map((id) => {
       return players[id] || id;
     }).join("\n");
@@ -142,12 +140,12 @@ window.onload = () => {
       state.menuState = MenuState.IN_MY_LOBBY;
       startGameButton.classList.remove("hidden");
       setLobby(res.lobbyId);
+      saveState();
       var players = {}
       players[state.playerId] = state.prettyName;
       updatePlayers(players);
     });
   }
-
 
   function joinLobby() {
     var code = lobbyIdEntry.value.toUpperCase();
@@ -156,8 +154,13 @@ window.onload = () => {
     }
     request.post("joinLobby", { lobbyId: code, playerId: state.playerId, prettyName: state.prettyName }).then((res) => {
       state.menuState = MenuState.IN_OTHER_LOBBY;
-      state.lobby.players = res.players;
+      state.players = res.players;
       setLobby(code);
+      if (res.createdBy == state.playerId) {
+        startGameButton.classList.remove("hidden");
+        state.menuState = MenuState.IN_MY_LOBBY;
+      }
+      saveState();
     });
   }
 
@@ -178,11 +181,11 @@ window.onload = () => {
   }
 
   function startGame() {
-    /* if (Object.keys(state.lobby.players).length < 2) { return; } */
+    /* if (Object.keys(state.players).length < 2) { return; } */
     if (state.menuState != MenuState.IN_MY_LOBBY) {
       throw new Error("wrong state to start game");
     }
-    request.post("startGame", { playerId: state.playerId, lobbyId: state.lobby.id }).then((update) => {
+    request.post("startGame", { playerId: state.playerId, lobbyId: state.lobbyId }).then((update) => {
       state.menuState = MenuState.IN_GAME;
       homeSection.classList.add("in-game");
       gameSection.classList.add("in-game");
@@ -199,24 +202,19 @@ window.onload = () => {
   function sendChat() {
     if (!chatEntry.value) { return; }
     if (!state.prettyName) {
-      state.prettyName = chatEntry.value;
-      chatEntry.value = "";
-      chatSubmit.innerText = "submit";
+      setPrettyName(chatEntry.value);
+      saveState();
       chatEntry.focus();
-      createLobbyButton.classList.remove("disabled");
-      if (lobbyIdEntry.value.length == 4) {
-        joinLobbyButton.classList.remove("disabled");
-      }
       return;
     }
-    if (!state.lobby.id || !chatEntry.value) {
+    if (!state.lobbyId || !chatEntry.value) {
       return;
     }
     var message = chatEntry.value;
     chatEntry.value = "";
     sendMessage({
       type: "chat",
-      lobbyId: state.lobby.id,
+      lobbyId: state.lobbyId,
       playerId: state.playerId,
       prettyName: state.prettyName,
       message: message
@@ -230,6 +228,57 @@ window.onload = () => {
   function updateChat(player, message) {
     chatWindow.innerText = chatWindow.innerText + player + ": " + message + "\n";
     chatWindow.scrollTo(0, chatWindow.scrollHeight);
+  }
+
+  function setPrettyName(value) {
+    state.prettyName = value;
+    chatEntry.value = "";
+    chatSubmit.innerText = "submit";
+    createLobbyButton.classList.remove("disabled");
+    if (lobbyIdEntry.value.length == 4) {
+      joinLobbyButton.classList.remove("disabled");
+    }
+  }
+
+  function saveState() {
+    var url = window.location.href;
+    var params = [
+      "prettyName",
+      "lobbyId"
+    ];
+    var hashPos = url.search("#");
+    if (hashPos != -1) {
+      url = url.substring(0, hashPos);
+    }
+    url += "#";
+
+    for (var i = 0; i < params.length; i++) {
+      if (state[params[i]]) {
+        url += params[i] + "=" + state[params[i]] + "&";
+      }
+    }
+
+    window.location.href = url;
+  }
+
+  function loadState() {
+    var url = window.location.href;
+    var hashPos = url.search("#");
+    if (hashPos != -1) {
+      var params = {};
+      url.substring(hashPos + 1).split("&").forEach(function(kv) {
+        params[kv.split("=")[0]] = kv.split("=")[1];
+      });
+
+      if (params.prettyName) {
+        setPrettyName(params.prettyName);
+      }
+
+      if (params.lobbyId && params.lobbyId.length == 4) {
+        lobbyIdEntry.value = params.lobbyId;
+        joinLobby();
+      }
+    }
   }
 
   var lobbyIdDisplay = document.getElementById("lobbyIdDisplay");
@@ -251,4 +300,6 @@ window.onload = () => {
   joinLobbyButton.onclick = joinLobby;
   chatSubmit.onclick = sendChat;
   chatContainer.onkeypress = chatContainerKeyPress;
+
+  loadState();
 };

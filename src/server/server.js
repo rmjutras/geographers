@@ -93,7 +93,7 @@ app.post("/joinLobby", (req, res) => {
         // TOOD
         res.status(500).send("TOOOOOOOD");
       } else {
-        res.send({});
+        res.send({ createdBy: lobby.createdBy });
       }
       lobby.players.forEach((id) => {
         playerConnections[id] && playerConnections[id].forEach((conn) => {
