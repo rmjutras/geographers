@@ -65,6 +65,9 @@ function generatePalette(callback_palette) {
         palette.classList.add('palette');
         palette.classList.add('palette_sub');
         palette.classList.add(element);
+        if (element === 'colour_null') {
+            palette.classList.add('colour_null_palette_only');
+        }
         palette.addEventListener(
             'click',
             function (el) {
