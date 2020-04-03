@@ -75,7 +75,7 @@ var stugame = (function() {
     elements.playerList.innerText = Object.keys(players).map((id) => {
       return players[id] || id;
     }).join("\n");
-    if (players.length > 1) {
+    if (Object.keys(players).length > 1) {
       elements.startGameButton.classList.remove("disabled");
     } else {
       elements.startGameButton.classList.add("disabled");
