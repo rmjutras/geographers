@@ -4,6 +4,7 @@ function change_colour(el, row, col, i) {
     actions.push([row, col, palette_key[active_colour]].join(''));
     grid_state[row][col] = palette_key[active_colour];
     console.log(grid_state);
+    stugame.setGameState({ grid: grid_state });
 }
 
 function select_colour(el) {

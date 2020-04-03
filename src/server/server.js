@@ -102,21 +102,44 @@ app.post("/joinLobby", (req, res) => {
   }
 });
 
-app.post("/startGame", (req, res) => {
-  var lobbyId = req.body.lobbyId,
-    lobby = lobbyStore[lobbyId];
+// app.post("/startGame", (req, res) => {
+//   var lobbyId = req.body.lobbyId,
+//     lobby = lobbyStore[lobbyId];
 
-  if (!lobby ||
-      (argv.env != "dev" && lobby.players.length < 2) ||
-      lobby.createdBy != req.body.playerId) {
-    return res.status(500).send("Invalid lobby id");
-  }
+//   if (!lobby ||
+//       (argv.env != "dev" && lobby.players.length < 2) ||
+//       lobby.createdBy != req.body.playerId) {
+//     return res.status(500).send("Invalid lobby id");
+//   }
 
-  // set up game stuff
-  lobby.started = true;
+//   // set up game stuff
+//   lobby.started = true;
 
-  res.send({});
-});
+//   res.send({});
+// });
+
+// app.post("/updateGameState", (req, res) => {
+//   var lobbyId = req.body.lobbyId,
+//     playerId = req.body.playerId,
+//     lobby = lobbyStore[lobbyId],
+//     newState = req.body.gameState;
+
+//   if (!lobby) {
+//     return res.status(500).send("Invalid lobby id");
+//   }
+
+//   if (lobby.players.indexOf(req.body.playerId) == -1 || lobby.createdBy != req.body.playerId) {
+//     return res.status(500).send("Invalid player id");
+//   }
+
+//   lobby.gameState = newState;
+//   res.send({ gameState: newState });
+
+//   console.log("update game state:");
+//   console.log(newState);
+
+//   // send update to players
+// });
 
 app.post("nextCard", (req, res) => {
   var lobby = lobbyStore[req.body.lobbyId];
@@ -197,7 +220,7 @@ wss.on("request", (req) => {
           connection.playerId = data.id;
           playerConnections[data.id] = playerConnections[data.id] || [];
           playerConnections[data.id].push(connection);
-        } else if (data.type == "chat" &&
+        } else if ((data.type == "chat" || data.type == "updateGameState" || data.type == "startGame") &&
                    data.lobbyId &&
                    lobbyStore[data.lobbyId] &&
                    lobbyStore[data.lobbyId].players.indexOf(data.playerId) != -1) {
@@ -208,14 +231,30 @@ wss.on("request", (req) => {
             if (playerConnections[p]) {
               playerConnections[p].forEach((c) => {
                 console.log(c.socket.remoteAddress);
-                c.sendJson({
-                  type: "chat",
-                  playerId: data.playerId,
-                  prettyName: data.prettyName,
-                  message: data.message
-                });
-                if (data.message == "play space lady") {
-                  c.sendJson({ type: "playSpaceLady" });
+                if (data.type == "chat") {
+                  c.sendJson({
+                    type: "chat",
+                    playerId: data.playerId,
+                    prettyName: data.prettyName,
+                    message: data.message
+                  });
+                  if (data.message == "play space lady") {
+                    c.sendJson({ type: "playSpaceLady" });
+                  }
+                } else if (data.type == "updateGameState") {
+                  c.sendJson({
+                    type: "updateGameState",
+                    gameState: data.gameState
+                  });
+                  console.log("updating game state");
+                  console.log(data.gameState);
+                } else if (data.type == "startGame" &&
+                           (argv.env == "dev" || lobbyStore[data.lobbyId].players.length >= 2) &&
+                           lobbyStore[data.lobbyId].createdBy == data.playerId) {
+                  c.sendJson({
+                    type: "gameStarted"
+                  });
+                  lobbyStore[data.lobbyId].started = true;
                 }
               });
             }
@@ -223,6 +262,7 @@ wss.on("request", (req) => {
         }
       } catch (e) {
         console.log("failed to parse message");
+        console.log(e);
       }
     }
   });
