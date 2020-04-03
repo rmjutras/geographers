@@ -173,9 +173,6 @@ var stugame = (function() {
       message: message
     });
     elements.chatEntry.focus();
-    if (message == "play space lady") {
-      (new Audio("audio/Space_Lady.mp3")).play();
-    }
   }
 
   function updateChat(player, message) {
@@ -306,7 +303,9 @@ var stugame = (function() {
     });
 
     subscribe("playSpaceLady", (event) => {
-      (new Audio("audio/Space_Lady.mp3")).play();
+      state.audio && state.audio.pause();
+      state.audio = new Audio("audio/Space_Lady.mp3");
+      state.audio.play();
     });
 
     subscribe("updateGameState", (event) => {
@@ -322,6 +321,10 @@ var stugame = (function() {
       elements.homeSection.classList.add("in-game");
       elements.gameSection.classList.add("in-game");
     });
+
+    window.onbeforeunload = () => {
+      webSocket.close();
+    };
   };
 
   return {
