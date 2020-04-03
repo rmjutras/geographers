@@ -156,7 +156,11 @@ window.onload = () => {
       state.menuState = MenuState.IN_OTHER_LOBBY;
       state.players = res.players;
       setLobby(code);
-      if (res.createdBy == state.playerId) {
+      if (res.started) {
+        state.menuState = MenuState.IN_GAME;
+        homeSection.classList.add("in-game");
+        gameSection.classList.add("in-game");
+      } else if (res.createdBy == state.playerId) {
         startGameButton.classList.remove("hidden");
         state.menuState = MenuState.IN_MY_LOBBY;
       }

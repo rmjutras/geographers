@@ -89,12 +89,7 @@ app.post("/joinLobby", (req, res) => {
         console.log(playerId + " joined lobby " + lobbyId);
       }
       lobby.prettyNames[playerId] = prettyName;
-      if (lobby.started) {
-        // TOOD
-        res.status(500).send("TOOOOOOOD");
-      } else {
-        res.send({ createdBy: lobby.createdBy });
-      }
+      res.send({ createdBy: lobby.createdBy, started: lobby.started });
       lobby.players.forEach((id) => {
         playerConnections[id] && playerConnections[id].forEach((conn) => {
           if (id == playerId) {
@@ -118,6 +113,7 @@ app.post("/startGame", (req, res) => {
   }
 
   // set up game stuff
+  lobby.started = true;
 
   res.send({});
 });
