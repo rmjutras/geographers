@@ -75,12 +75,12 @@ window.onload = () => {
   }
 
   subscribe("playerId", (event) => {
-    if (state.playerId) {
-      return;
+    if (!state.playerId) {
+      state.playerId = event.id;
+      localStorage.setItem("playerId", state.playerId);
+      webSocket.sendJson({ type: "playerId", id: state.playerId });
     }
-    state.playerId = event.id;
-    localStorage.setItem("playerId", state.playerId);
-    webSocket.sendJson({ type: "playerId", id: state.playerId });
+    loadState();
   });
 
   subscribe("chat", (event) => {
@@ -300,6 +300,4 @@ window.onload = () => {
   joinLobbyButton.onclick = joinLobby;
   chatSubmit.onclick = sendChat;
   chatContainer.onkeypress = chatContainerKeyPress;
-
-  loadState();
 };
