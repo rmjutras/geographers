@@ -59,6 +59,7 @@ function redraw() {
         var row = grid_state[i];
         for (var j = 0; j < row.length; j++) {
             var cell = document.getElementById("cell_" + i + j);
+            el.classList.remove(el.classList.value.split(' ')[1]);
             cell.classList.add(palette_key_inverse[row[j]]);
         }
     }

@@ -311,10 +311,10 @@ var stugame = (function() {
 
     subscribe("updateGameState", (event) => {
       state.gameState = event.gameState;
+      grid_state = event.gameState.grid;
       console.log("got new game state");
       console.log(event.gameState);
       redraw();
-      grid_state = event.gameState.grid;
     });
 
     subscribe("gameStarted", (event) => {
