@@ -131,7 +131,37 @@
 }
 
 .seasonal_cards_dropdown {
+    padding-top: 10px;
     overflow: hidden;
     height: 300px;
     width: 100%;
+    border-top-color: tan;
+    border-top-style: solid;
+    border-bottom-color: tan;
+    border-bottom-style: solid;
+    text-align: center;
+}
+
+.card_ {
+    background-repeat: no-repeat;
+    height: 225px;
+    width: 165px;
+    background-size: 165px 225px;
+    margin-right: 10px;
+    margin-left: 10px;
+    display: inline-block;
+}
+
+.card_label {
+    width: 165px;
+    height: 30px;
+}
+
+.seasonal_card_season {
+    background-image: url("../img/card/outpost-ruins.jpg");
+    display: inline-block;
+    border-style: solid;
+    border-radius: 5px;
+    margin-right: 85px;
+    margin-left: 30px;
 }

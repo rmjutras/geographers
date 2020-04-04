@@ -1,0 +1,5 @@
+.card_great_city {
+    background-image: url("../img/card/great-city.png");
+    display: inline-block;
+    border-radius: 5px;
+}
