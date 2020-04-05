@@ -3,3 +3,7 @@
     display: inline-block;
     border-radius: 5px;
 }
+
+.card_outpost_ruins {
+    background-image: url("../img/card/outpost-ruins.jpg");
+}

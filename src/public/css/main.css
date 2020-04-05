@@ -131,15 +131,15 @@
 }
 
 .seasonal_cards_dropdown {
-    padding-top: 10px;
     overflow: hidden;
-    height: 300px;
+    height: 278px;
     width: 100%;
     border-top-color: tan;
     border-top-style: solid;
     border-bottom-color: tan;
     border-bottom-style: solid;
     text-align: center;
+    padding-top: 5px;
 }
 
 .card_ {
@@ -155,13 +155,25 @@
 .card_label {
     width: 165px;
     height: 30px;
+    display: inline-block;
+    font-size: 24px;
+    font-family: 'Satisfy', cursive;
 }
 
 .seasonal_card_season {
-    background-image: url("../img/card/outpost-ruins.jpg");
     display: inline-block;
     border-style: solid;
     border-radius: 5px;
     margin-right: 85px;
     margin-left: 30px;
+}
+
+.dropdown_button {
+    right: 10px;
+    height: 22px;
+    width: 30px;
+    position: absolute;
+    text-align: center;
+    padding-bottom: 2px;
+    background-color: tan;
 }
