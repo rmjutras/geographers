@@ -65,6 +65,20 @@ function redraw() {
     }
 }
 
+function shareBoard() {
+    var display = document.getElementById("board_code");
+    var url = document.location.href;
+    var hashPos = url.search("#");
+    if (hashPos > -1) {
+        url = url.substring(0, hashPos);
+    }
+    url += "#board=" + grid_state.map(function(row) {
+        return row.join("");
+    }).join("");
+    display.value = url;
+    console.log(url);
+}
+
 function generatePalette(callback_palette) {
     let palette_master = document.createElement('div');
     selected_palette = palette_master.appendChild(document.createElement('div'));
