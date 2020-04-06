@@ -268,7 +268,7 @@ var stugame = (function() {
 
     webSocket.onmessage = (message) => {console.log("got message");console.log(message);
       var data = message.data && JSON.parse(message.data);
-      console.log(data);
+      // console.log(data);
       notify(data.type, data);
     };
 
@@ -311,8 +311,8 @@ var stugame = (function() {
     subscribe("updateGameState", (event) => {
       state.gameState = event.gameState;
       grid_state = event.gameState.grid;
-      console.log("got new game state");
-      console.log(event.gameState);
+      // console.log("got new game state");
+      // console.log(event.gameState);
       redraw();
     });
 

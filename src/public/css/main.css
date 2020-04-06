@@ -17,6 +17,11 @@
     margin-left: 8px;
 }
 
+.terrain_sub {
+    border-style: dashed;
+    margin-left: 8px;
+}
+
 .palette_master {
     display: inline-block;
     vertical-align: top;
@@ -40,27 +45,42 @@
 }
 
 .colour_field {
-    background-color: yellow;
+    background-color: rgba(212, 139, 36, 0.7);
 }
 
 .colour_town {
-    background-color: red;
+    background-color: rgba(184, 56, 24, 0.7);
 }
 
 .colour_water {
-    background-color: blue;
+    background-color: rgba(16, 91, 144, 0.7);
 }
 
 .colour_forest {
-    background-color: green;
+    background-color: rgba(14, 93, 37, 0.7);
 }
 
 .colour_monster {
-    background-color: purple;
+    background-color: rgba(96, 5, 129, 0.7);
 }
 
 .colour_null {
     background-color: rgba(255, 255, 255, 0.3);
+}
+
+.terrain_mountain {
+    background-color: darkgray;
+    background-image: url("../img/mountain.png");
+    background-size: 55px 40px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.terrain_outpost {
+    background-image: url("../img/outpost-icon.png");
+    background-size: 55px 55px;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .colour_null_palette_only {
@@ -176,4 +196,8 @@
     text-align: center;
     padding-bottom: 2px;
     background-color: tan;
+}
+
+.no_terrain {
+
 }

@@ -1,16 +1,31 @@
 function change_colour(el, row, col, i) {
-    el.classList.remove(el.classList.value.split(' ')[1]);
-    el.classList.add(active_colour);
-    actions.push([row, col, palette_key[active_colour]].join(''));
-    grid_state[row][col] = palette_key[active_colour];
-    console.log(grid_state);
+    const x = el.classList.value.split(' ');
+    console.log(x);
+    let colour;
+    let terrain;
+    x.forEach(element => {
+        if (element.split("_")[0] === 'colour') {
+            colour = element;
+            if (active_colour.split('_')[0] === 'colour') {
+                el.classList.remove(element);
+                el.classList.add(active_colour);
+            }
+        } else if (element.split("_")[0] === 'terrain') {
+            terrain = element;
+            if (active_colour.split('_')[0] === 'terrain') {
+                el.classList.remove(element);
+                el.classList.add(active_colour);
+            }
+        }
+    });
+    actions.push([row, col, palette_key[colour], terrain_key[terrain]].join(''));
+    grid_state[row][col] = palette_key[colour] + terrain_key[terrain];
     stugame.setGameState({ grid: grid_state });
 }
 
 function select_colour(el) {
     active_colour = el.classList.value;
     active_colour = active_colour.split(' ')[2];
-
     const newarr = selected_palette.classList.value;
     selected_palette.classList.remove(newarr.split(' ')[2]);
     selected_palette.classList.add(active_colour);
@@ -41,8 +56,9 @@ function clickableGrid(rows, cols, callback_change) {
             grid_state[r].push(palette_key['colour_null']);
             cell.classList.add('row_grid');
             cell.classList.add('colour_null');
+            cell.classList.add('terrain_null');
             // cell.innerHTML = ++i;
-            cell.addEventListener(
+            cell.addEventListener( 
                 'click',
                 (function(el,r,c,i) {
                     return function() {
@@ -54,16 +70,19 @@ function clickableGrid(rows, cols, callback_change) {
     return grid;
 };
 
-function redraw() {
-    for (var i = 0; i < grid_state.length; i++) {
-        var row = grid_state[i];
-        for (var j = 0; j < row.length; j++) {
-            var cell = document.getElementById("cell_" + i + j);
-            cell.classList.remove(cell.classList.value.split(' ')[1]);
-            cell.classList.add(palette_key_inverse[row[j]]);
-        }
-    }
-}
+// function redraw() {
+//     for (var i = 0; i < grid_state.length; i++) {
+//         var row = grid_state[i];
+//         for (var j = 0; j < row.length; j++) {
+//             var cell = document.getElementById("cell_" + i + j);
+//             cell.classList.remove(cell.classList.value.split(' ')[1]);
+//             cell.classList.remove(cell.classList.value.split(' ')[2]);
+//             console.log(row[j][0]);
+//             cell.classList.add(palette_key_inverse[row[j][0]]);
+//             cell.classList.add(palette_key_inverse[row[j][1]]);
+//         }
+//     }
+// }
 
 function generatePalette(callback_palette) {
     let palette_master = document.createElement('div');
@@ -85,11 +104,26 @@ function generatePalette(callback_palette) {
             'click',
             function (el) {
                 return function () {
-                    callback_palette(el);
+                    callback_palette(el, 'colour');
                 }
             } (palette)
         );
     });
+
+    Object.keys(terrain_key).forEach(element => {
+        let terrain_palette = palette_master.appendChild(document.createElement('div'));
+        terrain_palette.classList.add('palette')
+        terrain_palette.classList.add('terrain_sub');
+        terrain_palette.classList.add(element);
+        terrain_palette.addEventListener(
+            'click',
+            function (el) {
+                return function () {
+                    callback_palette(el, 'terrain');
+                }
+            } (terrain_palette)
+        );
+    })
     return palette_master;
 };
 
@@ -143,13 +177,26 @@ const palette_key = {
     'colour_monster': 'p',
     'colour_null': 'n'
 };
+
+const terrain_key = {
+    'terrain_mountain': 'm',
+    'terrain_outpost': 'o'
+}
 const palette_key_inverse = {
     'y': 'colour_field',
     'r': 'colour_town',
     'b': 'colour_water',
     'g': 'colour_forest',
     'p': 'colour_monster',
-    'n': 'colour_null'
+    'n': 'colour_null',
+    'm': 'colour_mountain',
+    'o': 'colour_outpost'
 };
+
+const terrain_key_inverse = {
+    'm': 'terrain_mountain',
+    'o': 'terrain_outpost',
+    'n': 'terrain_null'
+}
 main();
 
