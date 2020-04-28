@@ -99,7 +99,7 @@
     font-family: 'Satisfy', cursive;
 }
 
-.player_name {
+#player_name {
     height: 26px;
     width: 305px;
     padding-top: 3px;

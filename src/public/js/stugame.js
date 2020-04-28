@@ -62,6 +62,44 @@ var stugame = (function() {
     stateLoaded: false
   };
 
+  function lobbyIdKeyPress(event) {
+    var char = event.charCode;
+    if (elements.lobbyIdEntry.value.length == 4 || char < 65 || char > 122) {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  function lobbyIdKeyUp() {
+    if (elements.lobbyIdEntry.value.length == 4 && state.prettyName) {
+      elements.joinCreateButton.innerText = "Join Lobby";
+      state.lobbyId = elements.lobbyIdEntry.value;
+    } else {
+      elements.joinCreateButton.innerText = "Create Lobby";
+      state.lobbyId = "";
+    }
+  }
+
+  function nameEntryKeyUp() {
+    state.prettyName = elements.nameEntry.value;
+    if (state.prettyName) {
+      elements.joinCreateButton.classList.remove("disabled");
+    } else {
+      elements.joinCreateButton.classList.add("disabled");
+    }
+  }
+
+  function joinCreateLobby() {
+    if (!state.prettyName) { return; }
+    if (state.lobbyId) {
+
+    } else {
+
+    }
+  }
+
+
+
   function setLobby(id) {
     state.lobbyId = id;
     elements.lobbyIdDisplay.innerText = id;
@@ -118,22 +156,6 @@ var stugame = (function() {
     });
   }
 
-  function lobbyIdKeyPress(event) {
-    var char = event.charCode;
-    if (elements.lobbyIdEntry.value.length == 4 || char < 65 || char > 122) {
-      event.preventDefault();
-      return false;
-    }
-  }
-
-  function lobbyIdKeyUp() {
-    if (elements.lobbyIdEntry.value.length == 4 && state.prettyName) {
-      elements.joinLobbyButton.classList.remove("disabled");
-    } else {
-      elements.joinLobbyButton.classList.add("disabled");
-    }
-  }
-
   function startGame() {
     /* if (Object.keys(state.players).length < 2) { return; } */
     if (state.menuState != MenuState.IN_MY_LOBBY) {
@@ -188,6 +210,7 @@ var stugame = (function() {
     if (elements.lobbyIdEntry.value.length == 4) {
       elements.joinLobbyButton.classList.remove("disabled");
     }
+    elements.playerName.innerText = value;
   }
 
   function saveParams() {
@@ -250,6 +273,12 @@ var stugame = (function() {
   var elements = {};
 
   window.onload = () => {
+    elements.nameEntry = document.getElementById("nameEntry");
+    elements.joinCreateButton = document.getElementById("joinCreateButton");
+
+    elements.nameEntry.onkeyup = nameEntryKeyUp;
+    elements.joinCreateButton.onclick = joinCreateLobby;
+
     elements.lobbyIdDisplay = document.getElementById("lobbyIdDisplay");
     elements.chatEntry = document.getElementById("chatEntry");
     elements.chatContainer = document.getElementById("chatContainer");
@@ -261,11 +290,11 @@ var stugame = (function() {
     elements.homeSection = document.getElementById("home");
     elements.gameSection = document.getElementById("game");
     elements.playerList = document.getElementById("playerList");
+    elements.playerName = document.getElementById("player_name");
 
-    elements.startGameButton.onclick = startGame;
+    // elements.startGameButton.onclick = startGame;
     elements.lobbyIdEntry.onkeyup = lobbyIdKeyUp;
     elements.lobbyIdEntry.onkeypress = lobbyIdKeyPress;
-    elements.createLobbyButton.onclick = createLobby;
     elements.joinLobbyButton.onclick = joinLobby;
     elements.chatSubmit.onclick = sendChat;
     elements.chatContainer.onkeypress = chatContainerKeyPress;

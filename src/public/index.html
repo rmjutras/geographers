@@ -4,10 +4,11 @@
   <link rel="stylesheet" href="css/stugame.css">
   <link rel="stylesheet" href="css/cards.css">
   <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
   <section id="home">
-    <div class="col col3">
+<!--     <div class="col col3">
       <div id="buttonContainer">
         <div id="createLobby" class="button disabled">create lobby</div>
         <div id="joinLobby" class="button disabled">join lobby</div>
@@ -27,13 +28,24 @@
           <input type="text" id="chatEntry"><div id="chatSubmit" class="button">choose a name</div>
         </div>
       </div>
+    </div> -->
+    <div id="startingPrompt">
+      <div id="nameSection">
+        <div class="col col3 label">Name: </div><input type="text" class="col col7" id="nameEntry">
+      <div id="lobbyIdSection">
+        <div class="col col3 label">Room Code: </div><input type="text" class="col col7" id="lobbyIdEntry"></div>
+      </div>
+      <div id="createLobbySection">
+        <div class="col col3"></div><div id="joinCreateButton" class="col col3 button disabled">Create Lobby</div>
+      </div>
+      <div id="startButton"></div>
     </div>
   </section><section id="game" class="paper">
     <div class='player_header'>
       <div class='compass_rose'></div>
       <div class='player_icon'></div>
       <div class='player_text'>
-        <div class='player_name'>JOHNBOB</div>
+        <div id='player_name'>JOHNBOB</div>
         <div class='player_motto'>
           hey testing
         </div>

@@ -31,14 +31,14 @@ body {
   visibility: hidden;
 }
 
+.disabled {
+  color: #888;
+}
+
 #buttonContainer {
   padding: 50px;
   width: 200px;
   display: inline-block;
-}
-
-.disabled {
-  color: #888;
 }
 
 #lobbyIdEntryContainer {
@@ -119,6 +119,16 @@ section {
 
 #game.in-game {
   left: 0;
+}
+
+#startingPrompt {
+
+}
+
+.label {
+  text-align: right;
+  font-family: 'Roboto', sans-serif;
+  font-size: 30px;
 }
 
 .card {
