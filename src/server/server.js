@@ -8,6 +8,8 @@ const util = require("./util");
 
 const port = process.env.PORT || 5000;
 
+const MAX_PLAYERS = 1000;
+
 const lobbyStore = {};
 setInterval(() => {
   Object.keys(lobbyStore).forEach((k) => {
@@ -81,7 +83,7 @@ app.post("/joinLobby", (req, res) => {
   if (!lobby) {
     res.status(500).send("Invalid lobby code");
   } else {
-    if (lobby.players.length == 4) {
+    if (lobby.players.length >= MAX_PLAYERS) {
       res.status(500).send("Lobby is full");
     } else {
       if (!lobby.players.includes(playerId)) {

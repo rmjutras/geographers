@@ -7,8 +7,8 @@
 
 .palette {
     display: inline-block;
-    height: 80px;
-    width:80px;
+    height: 60px;
+    width:60px;
     margin: 2px;
 }
 
@@ -83,6 +83,13 @@
     background-repeat: no-repeat;
 }
 
+.terrain_void {
+    background-color: darkgray;
+    background-size: 55px 55px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .colour_null_palette_only {
     background-image: url("../img/eraser.svg");
     background-size: 70px 70px;
@@ -92,7 +99,6 @@
 
 .paper {
     background-image: url("../img/old-paper.jpg");
-    height: 100%;
 }
 
 .player_header {

@@ -228,6 +228,22 @@ var stugame = (function() {
         elements.lobbyIdEntry.value = params.lobbyId;
         joinLobby();
       }
+
+      if (params.board) {
+        var new_state = [];
+        for (var i = 0; i < 11; i++) {
+          new_state.push([]);
+          for (var j = 0; j < 11; j++) {
+            new_state[i].push(params.board.charAt(i * 11 + j));
+          }
+        }
+        grid_state = new_state;
+        redraw();
+
+        state.menuState = MenuState.IN_GAME;
+        elements.homeSection.classList.add("in-game");
+        elements.gameSection.classList.add("in-game");
+      }
     }
   }
 

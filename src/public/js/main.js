@@ -9,18 +9,21 @@ function change_colour(el, row, col, i) {
             if (active_colour.split('_')[0] === 'colour') {
                 el.classList.remove(element);
                 el.classList.add(active_colour);
+                colour = active_colour;
             }
         } else if (element.split("_")[0] === 'terrain') {
             terrain = element;
             if (active_colour.split('_')[0] === 'terrain') {
                 el.classList.remove(element);
                 el.classList.add(active_colour);
+                terrain = active_colour;
             }
         }
     });
     actions.push([row, col, palette_key[colour], terrain_key[terrain]].join(''));
     grid_state[row][col] = palette_key[colour] + terrain_key[terrain];
-    stugame.setGameState({ grid: grid_state });
+    console.log(grid_state);
+    // stugame.setGameState({ grid: grid_state });
 }
 
 function select_colour(el) {
@@ -53,7 +56,7 @@ function clickableGrid(rows, cols, callback_change) {
         for (var c=0; c<cols; ++c) {
             let cell = row.appendChild(document.createElement('div'));
             cell.id = "cell_" + r + c;
-            grid_state[r].push(palette_key['colour_null']);
+            grid_state[r].push(palette_key['colour_null']+terrain_key['terrain_null']);
             cell.classList.add('row_grid');
             cell.classList.add('colour_null');
             cell.classList.add('terrain_null');
@@ -84,6 +87,20 @@ function clickableGrid(rows, cols, callback_change) {
 //     }
 // }
 
+function shareBoard() {
+    var display = document.getElementById("board_code");
+    var url = document.location.href;
+    var hashPos = url.search("#");
+    if (hashPos > -1) {
+        url = url.substring(0, hashPos);
+    }
+    url += "#board=" + grid_state.map(function(row) {
+        return row.join("");
+    }).join("");
+    display.value = url;
+    console.log(url);
+}
+
 function generatePalette(callback_palette) {
     let palette_master = document.createElement('div');
     selected_palette = palette_master.appendChild(document.createElement('div'));
@@ -111,18 +128,20 @@ function generatePalette(callback_palette) {
     });
 
     Object.keys(terrain_key).forEach(element => {
-        let terrain_palette = palette_master.appendChild(document.createElement('div'));
-        terrain_palette.classList.add('palette')
-        terrain_palette.classList.add('terrain_sub');
-        terrain_palette.classList.add(element);
-        terrain_palette.addEventListener(
-            'click',
-            function (el) {
-                return function () {
-                    callback_palette(el, 'terrain');
-                }
-            } (terrain_palette)
-        );
+        if (element !== 'terrain_null') {
+            let terrain_palette = palette_master.appendChild(document.createElement('div'));
+            terrain_palette.classList.add('palette')
+            terrain_palette.classList.add('terrain_sub');
+            terrain_palette.classList.add(element);
+            terrain_palette.addEventListener(
+                'click',
+                function (el) {
+                    return function () {
+                        callback_palette(el, 'terrain');
+                    }
+                } (terrain_palette)
+            );
+        }
     })
     return palette_master;
 };
@@ -180,8 +199,11 @@ const palette_key = {
 
 const terrain_key = {
     'terrain_mountain': 'm',
-    'terrain_outpost': 'o'
+    'terrain_outpost': 'o',
+    'terrain_null': 'n',
+    'terrain_void': 'v'
 }
+
 const palette_key_inverse = {
     'y': 'colour_field',
     'r': 'colour_town',
