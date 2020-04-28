@@ -78,12 +78,20 @@ function redraw() {
         var row = grid_state[i];
         for (var j = 0; j < row.length; j++) {
             var cell = document.getElementById("cell_" + i + j);
-            cell.classList.remove(cell.classList.value.split(' ')[1]);
-            cell.classList.remove(cell.classList.value.split(' ')[2]);
+            resetCell(cell);
             cell.classList.add(palette_key_inverse[row[j][0]]);
             cell.classList.add(terrain_key_inverse[row[j][1]]);
         }
     }
+}
+
+function resetCell(cell) {
+    Object.keys(palette_key).forEach(k => {
+        cell.classList.remove(k);
+    });
+    Object.keys(terrain_key).forEach(k => {
+        cell.classList.remove(k);
+    });
 }
 
 function shareBoard() {

@@ -230,14 +230,7 @@ var stugame = (function() {
       }
 
       if (params.board) {
-        var new_state = [];
-        for (var i = 0; i < 11; i++) {
-          new_state.push([]);
-          for (var j = 0; j < 11; j++) {
-            new_state[i].push(params.board.charAt(i * 11 + j));
-          }
-        }
-        grid_state = new_state;
+        grid_state = grid_str_to_array(params.board);
         redraw();
 
         state.menuState = MenuState.IN_GAME;
