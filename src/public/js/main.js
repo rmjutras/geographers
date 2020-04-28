@@ -73,19 +73,18 @@ function clickableGrid(rows, cols, callback_change) {
     return grid;
 };
 
-// function redraw() {
-//     for (var i = 0; i < grid_state.length; i++) {
-//         var row = grid_state[i];
-//         for (var j = 0; j < row.length; j++) {
-//             var cell = document.getElementById("cell_" + i + j);
-//             cell.classList.remove(cell.classList.value.split(' ')[1]);
-//             cell.classList.remove(cell.classList.value.split(' ')[2]);
-//             console.log(row[j][0]);
-//             cell.classList.add(palette_key_inverse[row[j][0]]);
-//             cell.classList.add(palette_key_inverse[row[j][1]]);
-//         }
-//     }
-// }
+function redraw() {
+    for (var i = 0; i < grid_state.length; i++) {
+        var row = grid_state[i];
+        for (var j = 0; j < row.length; j++) {
+            var cell = document.getElementById("cell_" + i + j);
+            cell.classList.remove(cell.classList.value.split(' ')[1]);
+            cell.classList.remove(cell.classList.value.split(' ')[2]);
+            cell.classList.add(palette_key_inverse[row[j][0]]);
+            cell.classList.add(terrain_key_inverse[row[j][1]]);
+        }
+    }
+}
 
 function shareBoard() {
     var display = document.getElementById("board_code");
@@ -127,22 +126,22 @@ function generatePalette(callback_palette) {
         );
     });
 
-    Object.keys(terrain_key).forEach(element => {
-        if (element !== 'terrain_null') {
-            let terrain_palette = palette_master.appendChild(document.createElement('div'));
-            terrain_palette.classList.add('palette')
-            terrain_palette.classList.add('terrain_sub');
-            terrain_palette.classList.add(element);
-            terrain_palette.addEventListener(
-                'click',
-                function (el) {
-                    return function () {
-                        callback_palette(el, 'terrain');
-                    }
-                } (terrain_palette)
-            );
-        }
-    })
+    // Object.keys(terrain_key).forEach(element => {
+    //     if (element !== 'terrain_null') {
+    //         let terrain_palette = palette_master.appendChild(document.createElement('div'));
+    //         terrain_palette.classList.add('palette')
+    //         terrain_palette.classList.add('terrain_sub');
+    //         terrain_palette.classList.add(element);
+    //         terrain_palette.addEventListener(
+    //             'click',
+    //             function (el) {
+    //                 return function () {
+    //                     callback_palette(el, 'terrain');
+    //                 }
+    //             } (terrain_palette)
+    //         );
+    //     }
+    // })
     return palette_master;
 };
 
@@ -175,13 +174,26 @@ function generateButtons() {
     return button_master;
 };
 
+function grid_str_to_array(str) {
+    var array_out = [];
+    for (var i = 0; i < 11; i++) {
+      array_out.push([]);
+      for (var j = 0; j < 11; j++) {
+        array_out[i].push(str.substring(i * 22 + j * 2, i * 22 + j * 2 + 2));
+      }
+    }
+    return array_out;
+}
+
 function main() {
     const grid = clickableGrid(11, 11, change_colour);
     const palette_master = generatePalette(select_colour);
     const button_master = generateButtons();
     document.getElementById('grid_master').appendChild(grid);
     document.getElementById('palette_master').appendChild(palette_master);
-    document.getElementById('button_master').appendChild(button_master);
+    // document.getElementById('button_master').appendChild(button_master);
+    grid_state = grid_str_to_array('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnonnnmnnnnnnnnnonmnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnvnvnonnnnnnnnnnnnnnnnnvnvnvnnnnnnnnnnnonnnnnnnvnnnnnnnnnnnnnnnnnnnnnmnnnnnonnnnnnnnnnnnnnnnnnnnnnnmnnnnnnnmnonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
+    redraw();
 };
 
 let active_colour = 'colour_null';
@@ -218,7 +230,8 @@ const palette_key_inverse = {
 const terrain_key_inverse = {
     'm': 'terrain_mountain',
     'o': 'terrain_outpost',
-    'n': 'terrain_null'
+    'n': 'terrain_null',
+    'v': 'terrain_void'
 }
 main();
 
